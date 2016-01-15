@@ -1,0 +1,37 @@
+<html>
+    <head><meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+
+<title>Is it DT or ST?</title>
+<style type="text/css">
+  #zone {
+  font-size: 1000%; 
+  }
+  </style>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+    </head>
+    <body>
+      <div id="zone">
+        <p class="zone ">It's </p>
+      </div>
+    </body>
+    <script>
+Date.prototype.stdTimezoneOffset = function() {
+var jan = new Date(this.getFullYear(), 0, 1);
+var jul = new Date(this.getFullYear(), 6, 1);
+return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+}
+
+Date.prototype.dst = function() {
+return this.getTimezoneOffset() < this.stdTimezoneOffset();
+}
+
+var today = new Date();
+if (today.dst())
+    $('.zone').append("DT");
+else
+    $('.zone').append("ST");
+
+</script>
+</html>

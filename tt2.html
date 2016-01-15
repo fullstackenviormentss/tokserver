@@ -1,0 +1,67 @@
+<html>
+  <style type="text/css">
+  #container {
+    display: table;
+    }
+
+  #row  {
+    display: table-row;
+    }
+
+  #left {
+  padding-right: 10px;
+  text-align:right;
+    display: table-cell;
+  }
+  #left, #right {
+/*    padding: 10px;*/
+    display: table-cell;
+  }
+  #plain, #markup {
+  display: inline;
+  }
+  
+  #markup {
+  color: yellow;
+  background-color: red;
+  }
+
+  </style>
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>TweetTok</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" ></script>
+  <script src="tweetserver.js" async></script>
+
+  </head>
+  <body bgcolor="#FFFFEE">
+    TODO List:<br>
+    <ul>
+      <li> Random collection of languages</li>
+      <li> Dynamic set of languages</li>
+      <li> <strike>Public website</strike></li>
+      <li> Reload issue</li>
+      <li> More dates</li>
+      <li> List language</li>
+      <li><strike> Correct difflib offsets for unicode 8</strike> </li>
+      <li> Original tweet lookup for debugging</li>
+      <li><strike> red boxes</strike></li>
+      <li> show more universality (wikipedia snippets)</li>
+      <li> free text box </li>
+      <li> download tweets on demand (and cache?) instead of using .txt files </li>
+      </ul>
+    <p>
+  <form id="main" name="main" enctype="multipart/form-data">
+    <span> Select one or more languages for random selection of tweets</span><br>
+    <!-- TODO: dynamically populate this list -->
+    <input type="checkbox" name="Arabic" value="Arabic">Arabic</input>
+    <input type="checkbox" name="Spanish" value="Spanish">Spanish</input>
+    <input type="checkbox" name="Thai" value="Thai">Thai</input>
+    <input type="checkbox" name="Russian" value="Russian">Russian</input>
+    <input type="checkbox" name="Indonesian" value="Indonesian">Indonesian</input>
+  </form>
+  <button onclick="tokenize()">Click me</button>
+  <div id="anchor"></div>
+  </body>
+</html>

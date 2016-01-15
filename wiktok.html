@@ -1,0 +1,76 @@
+<html>
+  <style type="text/css">
+    @import url(http://fonts.googleapis.com/css?family=Lato:300,400|Droid+Sans+Mono);
+body {
+    background: #f3f3f3;
+    font: normal 120% Lato, sans-serif;
+    margin: 0;
+    color: #555;
+}
+/*body > * {
+    width: 760px;
+    padding: 20px;
+    margin: 20px auto;
+    background: white;
+}*/
+
+.blank_row
+{
+    height: 10px !important; /* Overwrite any previous rules */
+    background-color: #FFFFFF;
+}
+
+  #container {
+    display: table;
+    }
+
+  #row  {
+    display: table-row;
+    }
+
+  #left {
+  padding-right: 10px;
+  text-align:right;
+    display: table-cell;
+  }
+  #left, #right {
+/*    padding: 10px;*/
+    display: table-cell;
+  }
+  #plain, #markup {
+  display: inline;
+  }
+  
+  #markup {
+  color: yellow;
+  background-color: red;
+  }
+ #numbut {
+  display:block;
+}
+
+  </style>
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>WikTok</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" ></script>
+  <script src="tweetserver.js" async></script>
+
+  </head>
+  <body bgcolor="#FFFFEE">
+    TODO List:<br>
+    <ul>
+      <li> html Codes get through </li>
+      <li> choose a language </li>
+      <li> iso code in output </li>
+      <li> speed </li>
+</ul>
+    How many sentences?<input id="numbut" type="number" name="quantity" min="1" max="20" value="5">
+    <button onclick="randwiktok()">Choose random languages</button>
+    <br>OR<br>
+    Select a language by its <a href="http://www-01.sil.org/iso639-3/codes.asp">ISO 639-3 code</a> (e.g. eng, tam, hau, tur) <input type="text" name="lang" id="lang" maxlength="3" value="eng">
+    <button onclick="choosewiktok()">Go!</button>    
+    <div id="anchor"></div>
+  </body>
+</html>
