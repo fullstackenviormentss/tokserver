@@ -89,7 +89,7 @@ function tokenize() {
 
     var langlen = langs.length;
     for (var l = 0; l < langlen; l++) {
-        $.get( "http://colo-vm4.isi.edu:5000/"+langs[l]+"_20160103", function( data ) {
+        $.get( "http://colo-vm4.isi.edu:8081/"+langs[l]+"_20160103", function( data ) {
             var dl = data['data']['length'];
             var table = nd("container", div);
             for (var i = 0; i < dl; i++) {
@@ -129,28 +129,39 @@ function wiktok(langchoice) {
     div.textContent="";
     var numbox = document.getElementById("numbut");
     console.log(numbox.value);
-    $.get( "http://colo-vm4.isi.edu:5000/wik", {'items':numbox.value, 'lang':langchoice}, function( data ) {
-        var table = nd("container", div);
-        for (var i = 0; i< data.length; i++) {
-            lang = data[i]['lang'];
-            text = data[i]['text'];
-            url = data[i]['url'];
+    $.ajax({ 
+        url: "http://colo-vm4.isi.edu:8081/wik", 
+        data: {'items':numbox.value, 'lang':langchoice}, 
+        success: function( data ) {
+            var table = nd("container", div);
+            for (var i = 0; i< data.length; i++) {
+                lang = data[i]['lang']+" ("+data[i]['isocode']+")";
+                text = data[i]['text'];
+                url = data[i]['url'];
+                var row = nd("row", table);
+                var label = nd("left", row);
+                var urlitem = addelement("a", "url", label);
+                urlitem.setAttribute("href", url);
+                urlitem.textContent=lang;
+                console.log(label)
+                var datatag = nd("right", row);
+                datatag.textContent=text;
+                Object.keys(data[i]['tokenizations']).forEach(function (toktype) { 
+                    var tokhash = data[i]['tokenizations'][toktype];
+                    addtokrow(tokhash['data'], tokhash['diffs'], toktype, table);
+                });
+                var spacer = nd("blank_row", table);
+                spacer.setAttribute("class", "blank_row");
+            }
+        },
+        error: function( data ) {
+            var table = nd("container", div);
             var row = nd("row", table);
-            var label = nd("left", row);
-            var urlitem = addelement("a", "url", label);
-            urlitem.setAttribute("href", url);
-            urlitem.textContent=lang;
-            console.log(label)
-            var datatag = nd("right", row);
-            datatag.textContent=text;
-            Object.keys(data[i]['tokenizations']).forEach(function (toktype) { 
-                var tokhash = data[i]['tokenizations'][toktype];
-                addtokrow(tokhash['data'], tokhash['diffs'], toktype, table);
-            });
-            var spacer = nd("blank_row", table);
-            spacer.setAttribute("class", "blank_row");
-        }
-    }, 'json');
+            row.textContent="Something went wrong (bad lang code? glitch in the matrix?). Try again!"
+        },
+        
+        dataType: 'json'
+    });
 }
 
 

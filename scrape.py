@@ -10,6 +10,7 @@ import json
 import unicodedata
 import re
 import sys
+import html
 
 import operator
 
@@ -170,8 +171,8 @@ def get_usa_text(wikicode, num_chars, url_title):
 
 def get_random_text(wikicode, num_chars):
     url = \
-        'https://{0}.wikipedia.org/w/api.php?action=query&generator=random&prop=extracts&exchars={1}&' \
-        'format=json&grnnamespace=0'.format(wikicode, num_chars)
+        'https://{0}.wikipedia.org/w/api.php?action=query&generator=random&prop=extracts&' \
+        'format=json&grnnamespace=0'.format(wikicode,)
 
     text = ''
     specific_url = ''
@@ -180,7 +181,7 @@ def get_random_text(wikicode, num_chars):
         data = load_json_data(url)
         for page_id, info_dict in data['query']['pages'].items():
             # print(page_id)
-            text = info_dict['extract']
+            text = html.unescape(info_dict['extract'])
             text = re.sub(r'<[^>]*>', '', text)
             text = text.replace('\n', ' ')
             text = text.replace('\t', ' ')
@@ -188,6 +189,7 @@ def get_random_text(wikicode, num_chars):
             text = text.strip().strip('...')
             text = text.strip('…')
             text = text.strip()
+            text = text[:num_chars]
 
             try:
                 specific_url = get_url_of_page_id(wikicode, page_id)
@@ -281,9 +283,9 @@ if __name__ == '__main__':
     wikicode_to_lang = get_wiki_to_lang_dict()
     isocode_to_lang = iso_codes.parse_language_codes.get_code_to_lang()
 
-    with open('wikicode-to-lang.table', 'wb') as outfile:
-        for wikicode, lang in wikicode_to_lang.items():
-            outfile.write('{0}\t{1}\n'.format(wikicode, lang).encode('utf8'))
+    # with open('wikicode-to-lang.table', 'wb') as outfile:
+    #     for wikicode, lang in wikicode_to_lang.items():
+    #         outfile.write('{0}\t{1}\n'.format(wikicode, lang).encode('utf8'))
 
     if num_chars is None:
         num_chars = 500
@@ -305,7 +307,7 @@ if __name__ == '__main__':
                 specific_url, text, alphabet = get_random_text(wikicode, num_chars)
                 iso_code = iso_codes.parse_language_codes.find_isocode_for_wikicode(wikicode)
                 lang_name = get_lang_name(iso_code, wikicode)
-                sys.stdout.buffer.write((wikicode + '\t' + lang_name + '\t' + specific_url + '\t' + text + '\n').encode('utf8'))
+                sys.stdout.buffer.write((wikicode + '\t' + lang_name + '\t' + specific_url + '\t' + text + '\t'+ iso_code + '\n').encode('utf8'))
         else:
             with open('all-extracts.100.tail', 'w') as out_file:
                 wikicode_to_url_set = dict()

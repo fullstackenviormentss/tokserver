@@ -48,6 +48,10 @@ body {
  #numbut {
   display:block;
 }
+#button {
+    color: red;
+    width: 20em; height: 2em;
+}
 
   </style>
 
@@ -62,15 +66,15 @@ body {
     TODO List:<br>
     <ul>
       <li> html Codes get through </li>
-      <li> choose a language </li>
-      <li> iso code in output </li>
       <li> speed </li>
 </ul>
-    How many sentences?<input id="numbut" type="number" name="quantity" min="1" max="20" value="5">
-    <button onclick="randwiktok()">Choose random languages</button>
-    <br>OR<br>
-    Select a language by its <a href="http://www-01.sil.org/iso639-3/codes.asp">ISO 639-3 code</a> (e.g. eng, tam, hau, tur) <input type="text" name="lang" id="lang" maxlength="3" value="eng">
-    <button onclick="choosewiktok()">Go!</button>    
+    How many sentences should I tokenize?<input id="numbut" type="number" name="quantity" min="1" max="20" value="5">
+    <br> Now,
+    <button id="button" onclick="randwiktok()">Choose random languages</button>
+    or
+    select a language by its <a href="http://www-01.sil.org/iso639-3/codes.asp">ISO 639-3 code</a> (e.g. eng, tam, hau, tur) <input type="text" name="lang" id="lang" maxlength="3" value="eng">
+    <button id="button" onclick="choosewiktok()">Choose specific language</button>    
+    <div class="blank_row"></div>
     <div id="anchor"></div>
   </body>
 </html>

@@ -15,6 +15,8 @@ import shutil
 import atexit
 import difflib
 from subprocess import check_output, STDOUT, CalledProcessError, getoutput
+import html
+from html.parser import HTMLParser
 scriptdir = os.path.dirname(os.path.abspath(__file__))
 
 from flask_restful import Resource, Api
@@ -157,6 +159,7 @@ for thelang in ('Thai', 'Arabic', 'Indonesian', 'Spanish', 'Russian'):
 
 api.add_resource(HelloWorld, '/')
 api.add_resource(NumberedLetters, '/nl')
+htmlparser = HTMLParser();
 
 class GetWikis(Resource):
     def get(self):
@@ -172,7 +175,9 @@ class GetWikis(Resource):
         for line in wikres.split('\n'):
             toks = line.split('\t')
             if len(toks) >= 4:
-                d = {'lang':toks[1], 'url':toks[2], 'text':toks[3]}
+#                d = {'lang':toks[1], 'isocode': toks[4], 'url':toks[2], 'text':html.unescape(toks[3])}
+                d = {'lang':toks[1], 'isocode': toks[4], 'url':toks[2], 'text':toks[3]}
+#                d = {'lang':toks[1], 'isocode': toks[4], 'url':toks[2], 'text':htmlparser.unescape(toks[3])}
                 selection = [toks[3],]
                 tokresults = {}
                 #print(selection[0])
@@ -188,11 +193,53 @@ class GetWikis(Resource):
                 ret.append(d)
         return ret
 
-api.add_resource(GetWikis, '/wik')
 
+
+class GetWikis2(Resource):
+    def get(self):
+        items = int(request.args.get('items'))
+        lang = request.args.get('lang')
+        if lang == 'random':
+            langchoice = "--random"
+        else:
+            langchoice = "--code %s" % lang
+        cmd=scrapefile+" --chars=140 %s --extracts=%d" % (langchoice, items)
+        wikres = check_output(cmd, shell=True).decode('utf8')
+        ret = []
+        lines = wikres.split('\n')
+        texts = []
+        langs = []
+        isocodes = []
+        urls = []
+        for line in lines:
+            toks = line.split('\t')
+            if len(toks) >= 4:
+                texts.append(toks[3])
+                langs.append(toks[1])
+                isocodes.append(toks[4])
+                urls.append(toks[2])
+        alltokresults = {}
+        alltokdiffs = {}
+        for tokname, tokfun in tokenizations[1:]:
+            tokres = tokfun(texts)
+            #print(tokres[0])
+            alltokresults[tokname] = tokres
+            alltokdiffs[tokname] = diffcodes(texts, tokres)
+        for tn, text in enumerate(texts):
+                d = {'lang':langs[tn], 'isocode': isocodes[tn], 'url':urls[tn], 'text':text}
+                tokresults = {}
+                for tokname in alltokresults.keys():
+                    tokresults[tokname] = {}
+                    tokresults[tokname]['data']=alltokresults[tokname][tn]
+                    tokresults[tokname]['diffs']=alltokdiffs[tokname][tn]
+                d['tokenizations']=tokresults
+                ret.append(d)
+        return ret
+
+api.add_resource(GetWikis2, '/wik')
 
     
 if __name__ == '__main__':
     print("running")
-    app.run(debug=True, host='0.0.0.0')
+    app.run(host='0.0.0.0', port=8081)
 
